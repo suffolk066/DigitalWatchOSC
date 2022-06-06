@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace DigitalWatchOSC
 {
+    
     public partial class FormOSC : Form
     {
-        public FormOSC()
+        
+        public FormOSC() //생성자
         {
             InitializeComponent();
+            Program.ThreadStart = false;
+            Program._sendingThread = new Thread(new ThreadStart(Program.SendingLoop));
+            Program._sendingThread.Start();
         }
         internal void CurrentTime_log(string infoMessage)
         {
@@ -43,13 +48,26 @@ namespace DigitalWatchOSC
         }
         internal void button1_Click(object sender, EventArgs e)
         {
-            Program._sendingThread = new Thread(new ThreadStart(Program.SendingLoop));
-            Program._sendingThread.Start();
+            if(Program.ThreadStart == false)
+            {
+                Program.ThreadStart = true;
+            }
+
         }
 
         internal void button2_Click(object sender, EventArgs e)
         {
-         
+            if(Program.ThreadStart == true)
+            {
+                Program.ThreadStart = false;
+            }
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Program.ThreadStart = false;
+            Program.Isloop = false;
+            Program._sendingThread.Join();
+            base.OnClosing(e);
         }
     }
 }
