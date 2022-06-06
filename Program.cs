@@ -6,7 +6,7 @@ namespace DigitalWatchOSC
     {
 
         private static EventHandler _applicationIdleHandler;
-        private static Thread _sendingThread;
+        internal static Thread _sendingThread;
         private static FormOSC _formOSC;
         private static UDPListener _listener;
         private static UDPSender _sender;
@@ -74,14 +74,12 @@ namespace DigitalWatchOSC
         private static void SetupSender()
         {
             _sender = new UDPSender("127.0.0.1", 9000);
-            _sendingThread = new Thread(new ThreadStart(SendingLoop));
-            _sendingThread.Start();
         }
         private static void SetupReceiver()
         {
             _listener = new UDPListener(9001);
         }
-        static void SendingLoop()
+        internal static void SendingLoop()
         {
             try
             {
@@ -98,6 +96,13 @@ namespace DigitalWatchOSC
                     _sender.Send(_messageMonth);
                     _sender.Send(_messageDay);
                     _sender.Send(_messageWday);
+
+                    //디버그용
+                    _formOSC.CurrentTime_log($"Sending: Minutes Int as {Minutes()} to {_formOSC.address.Text + _formOSC.text_minutes.Text}");
+                    _formOSC.CurrentTime_log($"Sending: Hours Int as {Hours()} to {_formOSC.address.Text + _formOSC.text_hours.Text}");
+                    _formOSC.CurrentTime_log($"Sending: Month Int as {Month()} to {_formOSC.address.Text + _formOSC.text_month.Text}");
+                    _formOSC.CurrentTime_log($"Sending: Day Int as {Day()} to {_formOSC.address.Text + _formOSC.text_day.Text}");
+                    _formOSC.CurrentTime_log($"Sending: Wday Int as {Wday()} to {_formOSC.address.Text + _formOSC.text_wday.Text}");
 
                     Thread.Sleep(5000);
                 }

@@ -28,7 +28,6 @@
         /// </summary>
         public void InitializeComponent()
         {
-            this.CurrentTime = new System.Windows.Forms.Panel();
             this.address = new System.Windows.Forms.Label();
             this.text_minutes = new System.Windows.Forms.TextBox();
             this.text_hours = new System.Windows.Forms.TextBox();
@@ -37,20 +36,13 @@
             this.text_wday = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.CurrentTime = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // CurrentTime
-            // 
-            this.CurrentTime.BackColor = System.Drawing.Color.PaleGreen;
-            this.CurrentTime.Location = new System.Drawing.Point(25, 20);
-            this.CurrentTime.Name = "CurrentTime";
-            this.CurrentTime.Size = new System.Drawing.Size(340, 100);
-            this.CurrentTime.TabIndex = 0;
             // 
             // address
             // 
             this.address.AutoSize = true;
-            this.address.Location = new System.Drawing.Point(38, 142);
+            this.address.Location = new System.Drawing.Point(31, 139);
             this.address.Name = "address";
             this.address.Size = new System.Drawing.Size(113, 15);
             this.address.TabIndex = 1;
@@ -58,7 +50,7 @@
             // 
             // text_minutes
             // 
-            this.text_minutes.Location = new System.Drawing.Point(173, 139);
+            this.text_minutes.Location = new System.Drawing.Point(31, 165);
             this.text_minutes.Name = "text_minutes";
             this.text_minutes.Size = new System.Drawing.Size(174, 23);
             this.text_minutes.TabIndex = 2;
@@ -66,7 +58,7 @@
             // 
             // text_hours
             // 
-            this.text_hours.Location = new System.Drawing.Point(173, 168);
+            this.text_hours.Location = new System.Drawing.Point(31, 194);
             this.text_hours.Name = "text_hours";
             this.text_hours.Size = new System.Drawing.Size(174, 23);
             this.text_hours.TabIndex = 3;
@@ -74,7 +66,7 @@
             // 
             // text_month
             // 
-            this.text_month.Location = new System.Drawing.Point(173, 197);
+            this.text_month.Location = new System.Drawing.Point(31, 223);
             this.text_month.Name = "text_month";
             this.text_month.Size = new System.Drawing.Size(174, 23);
             this.text_month.TabIndex = 4;
@@ -82,7 +74,7 @@
             // 
             // text_day
             // 
-            this.text_day.Location = new System.Drawing.Point(173, 226);
+            this.text_day.Location = new System.Drawing.Point(31, 252);
             this.text_day.Name = "text_day";
             this.text_day.Size = new System.Drawing.Size(174, 23);
             this.text_day.TabIndex = 5;
@@ -90,7 +82,7 @@
             // 
             // text_wday
             // 
-            this.text_wday.Location = new System.Drawing.Point(173, 255);
+            this.text_wday.Location = new System.Drawing.Point(31, 281);
             this.text_wday.Name = "text_wday";
             this.text_wday.Size = new System.Drawing.Size(174, 23);
             this.text_wday.TabIndex = 6;
@@ -98,7 +90,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(25, 303);
+            this.button1.Location = new System.Drawing.Point(271, 181);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(157, 36);
             this.button1.TabIndex = 7;
@@ -108,7 +100,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(212, 303);
+            this.button2.Location = new System.Drawing.Point(271, 239);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(153, 36);
             this.button2.TabIndex = 8;
@@ -116,11 +108,23 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // CurrentTime
+            // 
+            this.CurrentTime.BackColor = System.Drawing.Color.PaleGreen;
+            this.CurrentTime.Location = new System.Drawing.Point(15, 12);
+            this.CurrentTime.Multiline = true;
+            this.CurrentTime.Name = "CurrentTime";
+            this.CurrentTime.ReadOnly = true;
+            this.CurrentTime.ShortcutsEnabled = false;
+            this.CurrentTime.Size = new System.Drawing.Size(460, 108);
+            this.CurrentTime.TabIndex = 0;
+            // 
             // FormOSC
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 361);
+            this.ClientSize = new System.Drawing.Size(490, 327);
+            this.Controls.Add(this.CurrentTime);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.text_wday);
@@ -129,7 +133,6 @@
             this.Controls.Add(this.text_hours);
             this.Controls.Add(this.text_minutes);
             this.Controls.Add(this.address);
-            this.Controls.Add(this.CurrentTime);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FormOSC";
             this.Text = "DigitalWatchOSC";
@@ -139,8 +142,6 @@
         }
 
         #endregion
-
-        private Panel CurrentTime;
         public Label address;
         public TextBox text_minutes;
         public TextBox text_hours;
@@ -149,5 +150,6 @@
         public TextBox text_wday;
         private Button button1;
         private Button button2;
+        internal TextBox CurrentTime;
     }
 }
