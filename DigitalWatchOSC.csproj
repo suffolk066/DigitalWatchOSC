@@ -8,6 +8,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="SharpOSC">
       <HintPath>..\..\..\Downloads\SharpOSC-master\Binaries\v0.1.1.0\Release\SharpOSC.dll</HintPath>

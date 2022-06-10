@@ -1,6 +1,3 @@
-// 설정 만들기
-
-
 using SharpOSC;
 
 namespace DigitalWatchOSC
@@ -20,7 +17,6 @@ namespace DigitalWatchOSC
         private static OscMessage _messageWday;
         public static bool ThreadStart;
         public static bool Isloop;
-
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -85,7 +81,7 @@ namespace DigitalWatchOSC
         {
             _listener = new UDPListener(9001); // 나중에 바꿀것 JSON XML 메모장 등등등
         }
-        internal static void SendingLoop()
+        public static void SendingLoop()
         {
             try
             {
@@ -106,6 +102,7 @@ namespace DigitalWatchOSC
                         _sender.Send(_messageWday);
 
                         //디버그용
+                        _formOSC.CurrentTime_log($"=============={ Minutes()}");
                         _formOSC.CurrentTime_log($"Sending: Minutes Int as {Minutes()} to {_formOSC.address.Text + _formOSC.text_minutes.Text}");
                         _formOSC.CurrentTime_log($"Sending: Hours Int as {Hours()} to {_formOSC.address.Text + _formOSC.text_hours.Text}");
                         _formOSC.CurrentTime_log($"Sending: Month Int as {Month()} to {_formOSC.address.Text + _formOSC.text_month.Text}");
@@ -117,7 +114,7 @@ namespace DigitalWatchOSC
             }
             finally
             {
-                //_sender.Close();
+                _sender.Close();
             }
         }
     }

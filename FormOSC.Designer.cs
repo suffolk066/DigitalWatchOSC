@@ -148,8 +148,8 @@
         public TextBox text_month;
         public TextBox text_day;
         public TextBox text_wday;
+        public TextBox CurrentTime;
         private Button button1;
         private Button button2;
-        internal TextBox CurrentTime;
     }
 }
