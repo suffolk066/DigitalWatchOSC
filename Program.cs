@@ -1,7 +1,43 @@
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using SharpOSC;
 
 namespace DigitalWatchOSC
 {
+
+    #region Setting.json
+    public class TimeConfig
+    {
+        public static TimeConfig Values { get; private set; }
+        public string Minutes { get; set; }
+        public string Hours { get; set; }
+        public string Month { get; set; } 
+        public string Days { get; set; }
+        public string Wdays { get; set; }
+        public int PortSender { get; set; }
+        public int PortListener { get; set; }
+        public string IPAddress { get; set; }
+
+
+        public TimeConfig() { } //이게모임??
+
+        public static void Save()
+        {
+            if (Values == null)
+                Values = new TimeConfig();
+            File.WriteAllText ("Settings.json", JsonSerializer.Serialize(Values, new JsonSerializerOptions() { WriteIndented = true }), Encoding.UTF8);
+        }
+        public static void Load()
+        {
+            if (!File.Exists("Settings.json"))
+                Save();
+            Values = JsonSerializer.Deserialize<TimeConfig>(File.ReadAllText("Settings.json", Encoding.UTF8));
+        }
+    }
+
+    #endregion
     static class Program
     {
 
@@ -23,20 +59,14 @@ namespace DigitalWatchOSC
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //create code to finish the setup when Application.Run() finishes
             _applicationIdleHandler = delegate {
                 SetupSender();
                 SetupReceiver();
-                //detach so that this doesn't run again
                 Application.Idle -= _applicationIdleHandler;
             };
-            //we must finish the setup after the application was created
             Application.Idle += _applicationIdleHandler;
-            //we must free ressources when the application is about to get shut down
             Application.ApplicationExit += delegate
             {
                 //_listener.Close();
@@ -75,11 +105,21 @@ namespace DigitalWatchOSC
         }
         private static void SetupSender()
         {
-            _sender = new UDPSender("127.0.0.1", 9000); // 바꿔조
+            var TimeConfig = new TimeConfig();
+            {
+                TimeConfig.IPAddress = _formOSC.text_ip.Text;
+                TimeConfig.PortSender = int.Parse(_formOSC.text_sender.Text);
+            }
+            _sender = new UDPSender(TimeConfig.IPAddress, TimeConfig.PortSender);
         }
         private static void SetupReceiver()
         {
-            _listener = new UDPListener(9001); // 나중에 바꿀것 JSON XML 메모장 등등등
+            var TimeConfig = new TimeConfig();
+            {
+                TimeConfig.PortListener = 9001;
+            }
+
+            _listener = new UDPListener(TimeConfig.PortListener);
         }
         public static void SendingLoop()
         {
@@ -101,7 +141,7 @@ namespace DigitalWatchOSC
                         _sender.Send(_messageDay);
                         _sender.Send(_messageWday);
 
-                        //디버그용
+                        //디버그용 나중에 날릴거
                         _formOSC.CurrentTime_log($"=============={ Minutes()}");
                         _formOSC.CurrentTime_log($"Sending: Minutes Int as {Minutes()} to {_formOSC.address.Text + _formOSC.text_minutes.Text}");
                         _formOSC.CurrentTime_log($"Sending: Hours Int as {Hours()} to {_formOSC.address.Text + _formOSC.text_hours.Text}");
