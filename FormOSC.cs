@@ -13,17 +13,19 @@ namespace DigitalWatchOSC
     
     public partial class FormOSC : Form
     {
-        
+
         public FormOSC() //생성자
         {
             InitializeComponent();
             TimeConfig.Load(); //프로그램 켤때 Settings.json 설정값 불러오기
-            Program.ThreadStart = false;
-            Program._sendingThread = new Thread(new ThreadStart(Program.SendingLoop));
-            Program._sendingThread.Start();
+            Program.threadStart = false;
+            Program.thread = new Thread(new ThreadStart(Program.SendingLoop));
+            Program.thread.Start();
         }
 
         #region (디버그용)나중에 시계로 교체할것
+
+
         internal void CurrentTime_log(string infoMessage)
         {
             if (InvokeRequired) 
@@ -81,18 +83,18 @@ namespace DigitalWatchOSC
 
         internal void button1_Click(object sender, EventArgs e)
         {
-            if(Program.ThreadStart == false)
+            if(Program.threadStart == false)
             {
-                Program.ThreadStart = true;
+                Program.threadStart = true;
             }
-            groupBox1.Enabled = false;
+            Settings.Enabled = false;
 
-            //전송 시작할 때 설정값 저장하기
-            TimeConfig.Values.Minutes = text_minutes.Text;
-            TimeConfig.Values.Hours = text_hours.Text;
-            TimeConfig.Values.Month = text_month.Text;
-            TimeConfig.Values.Days = text_day.Text;
-            TimeConfig.Values.Wdays = text_wday.Text;
+            //Start 할 때 설정값 저장하기
+            TimeConfig.Values.Minutes = address.Text + text_minutes.Text;
+            TimeConfig.Values.Hours = address.Text + text_hours.Text;
+            TimeConfig.Values.Month = address.Text + text_month.Text;
+            TimeConfig.Values.Days = address.Text + text_day.Text;
+            TimeConfig.Values.Wdays = address.Text + text_wday.Text;
             TimeConfig.Values.PortSender = int.Parse(text_sender.Text);
             TimeConfig.Values.PortListener = int.Parse(text_listener.Text);
             TimeConfig.Values.IPAddress = text_ip.Text;
@@ -102,18 +104,18 @@ namespace DigitalWatchOSC
 
         internal void button2_Click(object sender, EventArgs e)
         {
-            if(Program.ThreadStart == true)
+            if(Program.threadStart == true)
             {
-                Program.ThreadStart = false;
+                Program.threadStart = false;
             }
-            groupBox1.Enabled = true;
+            Settings.Enabled = true;
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            Program.ThreadStart = false;
-            Program.Isloop = false;
-            Program._sendingThread.Join();
+            Program.threadStart = false;
+            Program.isloop = false;
+            Program.thread.Join();
             base.OnClosing(e);
         }
     }

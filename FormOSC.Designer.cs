@@ -43,8 +43,8 @@
             this.text_ip = new System.Windows.Forms.TextBox();
             this.text_sender = new System.Windows.Forms.TextBox();
             this.text_listener = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox1.SuspendLayout();
+            this.Settings = new System.Windows.Forms.GroupBox();
+            this.Settings.SuspendLayout();
             this.SuspendLayout();
             // 
             // address
@@ -188,27 +188,27 @@
             this.text_listener.Text = "9001";
             this.text_listener.TextChanged += new System.EventHandler(this.text_listener_TextChanged);
             // 
-            // groupBox1
+            // Settings
             // 
-            this.groupBox1.Controls.Add(this.text_listener);
-            this.groupBox1.Controls.Add(this.text_sender);
-            this.groupBox1.Controls.Add(this.text_ip);
-            this.groupBox1.Controls.Add(this.text_wday);
-            this.groupBox1.Controls.Add(this.Listener);
-            this.groupBox1.Controls.Add(this.text_day);
-            this.groupBox1.Controls.Add(this.Sender);
-            this.groupBox1.Controls.Add(this.text_month);
-            this.groupBox1.Controls.Add(this.IP);
-            this.groupBox1.Controls.Add(this.text_hours);
-            this.groupBox1.Controls.Add(this.text_minutes);
-            this.groupBox1.Controls.Add(this.address);
-            this.groupBox1.ImeMode = System.Windows.Forms.ImeMode.On;
-            this.groupBox1.Location = new System.Drawing.Point(15, 135);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(344, 220);
-            this.groupBox1.TabIndex = 15;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Settings";
+            this.Settings.Controls.Add(this.text_listener);
+            this.Settings.Controls.Add(this.text_sender);
+            this.Settings.Controls.Add(this.text_ip);
+            this.Settings.Controls.Add(this.text_wday);
+            this.Settings.Controls.Add(this.Listener);
+            this.Settings.Controls.Add(this.text_day);
+            this.Settings.Controls.Add(this.Sender);
+            this.Settings.Controls.Add(this.text_month);
+            this.Settings.Controls.Add(this.IP);
+            this.Settings.Controls.Add(this.text_hours);
+            this.Settings.Controls.Add(this.text_minutes);
+            this.Settings.Controls.Add(this.address);
+            this.Settings.ImeMode = System.Windows.Forms.ImeMode.On;
+            this.Settings.Location = new System.Drawing.Point(15, 135);
+            this.Settings.Name = "Settings";
+            this.Settings.Size = new System.Drawing.Size(344, 220);
+            this.Settings.TabIndex = 15;
+            this.Settings.TabStop = false;
+            this.Settings.Text = "Settings";
             // 
             // FormOSC
             // 
@@ -216,14 +216,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(372, 428);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.Settings);
             this.Controls.Add(this.CurrentTime);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FormOSC";
             this.Text = "DigitalWatchOSC";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.Settings.ResumeLayout(false);
+            this.Settings.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -245,6 +245,6 @@
         public TextBox text_ip;
         public TextBox text_sender;
         public TextBox text_listener;
-        private GroupBox groupBox1;
+        private GroupBox Settings;
     }
 }

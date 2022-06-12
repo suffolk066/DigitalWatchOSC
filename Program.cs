@@ -1,13 +1,12 @@
-using System.IO;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using SharpOSC;
 
 namespace DigitalWatchOSC
 {
 
     #region Setting.json
+    //참고 https://sourceexample.com/serialize-deserialize-app-settings-into-json-files-using-system.text.json-41f16/
     public class TimeConfig
     {
         public static TimeConfig Values { get; private set; }
@@ -38,21 +37,21 @@ namespace DigitalWatchOSC
     }
 
     #endregion
+
     static class Program
     {
-
-        private static EventHandler _applicationIdleHandler;
-        public static Thread _sendingThread;
-        private static FormOSC _formOSC;
-        public static UDPListener _listener;
-        public static UDPSender _sender;
-        private static OscMessage _messageMinutes;
-        private static OscMessage _messageHours;
-        private static OscMessage _messageMonth;
-        private static OscMessage _messageDay;
-        private static OscMessage _messageWday;
-        public static bool ThreadStart;
-        public static bool Isloop;
+        public static bool threadStart;
+        public static bool isloop;
+        public static Thread thread;
+        public static UDPListener listener;
+        public static UDPSender sender;
+        private static FormOSC formOSC;
+        private static EventHandler eventHandler;
+        private static OscMessage mMinutes;
+        private static OscMessage mHours;
+        private static OscMessage mMonth;
+        private static OscMessage mDay;
+        private static OscMessage mWday;
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -61,56 +60,29 @@ namespace DigitalWatchOSC
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            _applicationIdleHandler = delegate {
+            eventHandler = delegate {
                 SetupSender();
                 SetupReceiver();
-                Application.Idle -= _applicationIdleHandler;
+                Application.Idle -= eventHandler;
             };
-            Application.Idle += _applicationIdleHandler;
+            Application.Idle += eventHandler;
             Application.ApplicationExit += delegate
             {
-                //_listener.Close();
-                _listener.Dispose();
-                //_sender.Close();
-                _sendingThread.Join();
+                listener.Dispose();
+                thread.Join();
             };
-            Isloop = true;
-            _formOSC = new FormOSC(); //응애
-            Application.Run(_formOSC); //메인
-        }
-        private static int Minutes()
-        {
-            int minuteint = DateTime.Now.Minute;
-            return minuteint;
-        }
-        private static int Hours()
-        {
-            int hourint = DateTime.Now.Hour;
-            return hourint;
-        }
-        private static int Month()
-        {
-            int monthint = DateTime.Now.Month;
-            return monthint;
-        }
-        private static int Day()
-        {
-            int dayint = DateTime.Now.Day;
-            return dayint;
-        }
-        private static int Wday()
-        {
-            int wdayint = (int)DateTime.Now.DayOfWeek;
-            return wdayint;
+            isloop = true;
+            formOSC = new FormOSC(); //응애
+            Application.Run(formOSC); //메인
         }
         private static void SetupSender()
         {
             var TimeConfig = new TimeConfig();
             {
-                TimeConfig.IPAddress = _formOSC.text_ip.Text;
-                TimeConfig.PortSender = int.Parse(_formOSC.text_sender.Text);
+                TimeConfig.IPAddress = formOSC.text_ip.Text;
+                TimeConfig.PortSender = int.Parse(formOSC.text_sender.Text);
             }
-            _sender = new UDPSender(TimeConfig.IPAddress, TimeConfig.PortSender);
+            sender = new UDPSender(TimeConfig.IPAddress, TimeConfig.PortSender);
         }
         private static void SetupReceiver()
         {
@@ -119,42 +91,41 @@ namespace DigitalWatchOSC
                 TimeConfig.PortListener = 9001;
             }
 
-            _listener = new UDPListener(TimeConfig.PortListener);
+            listener = new UDPListener(TimeConfig.PortListener);
         }
         public static void SendingLoop()
         {
             try
             {
-                while (Isloop)
+                while (isloop)
                 {
-                    if(ThreadStart == true)
+                    if(threadStart == true)
                     {
-                        _messageMinutes = new OscMessage(_formOSC.address.Text + _formOSC.text_minutes.Text, Minutes());
-                        _messageHours = new OscMessage(_formOSC.address.Text + _formOSC.text_hours.Text, Hours());
-                        _messageMonth = new OscMessage(_formOSC.address.Text + _formOSC.text_month.Text, Month());
-                        _messageDay = new OscMessage(_formOSC.address.Text + _formOSC.text_day.Text, Day());
-                        _messageWday = new OscMessage(_formOSC.address.Text + _formOSC.text_wday.Text, Wday());
+                        mMinutes = new OscMessage(formOSC.address.Text + formOSC.text_minutes.Text, DateTime.Now.Minute);
+                        mHours = new OscMessage(formOSC.address.Text + formOSC.text_hours.Text, DateTime.Now.Hour);
+                        mMonth = new OscMessage(formOSC.address.Text + formOSC.text_month.Text, DateTime.Now.Month);
+                        mDay = new OscMessage(formOSC.address.Text + formOSC.text_day.Text, DateTime.Now.Day);
+                        mWday = new OscMessage(formOSC.address.Text + formOSC.text_wday.Text, (int)DateTime.Now.DayOfWeek);
 
-                        _sender.Send(_messageMinutes);
-                        _sender.Send(_messageHours);
-                        _sender.Send(_messageMonth);
-                        _sender.Send(_messageDay);
-                        _sender.Send(_messageWday);
+                        sender.Send(mMinutes);
+                        sender.Send(mHours);
+                        sender.Send(mMonth);
+                        sender.Send(mDay);
+                        sender.Send(mWday);
 
                         //디버그용 나중에 날릴거
-                        _formOSC.CurrentTime_log($"=============={ Minutes()}");
-                        _formOSC.CurrentTime_log($"Sending: Minutes Int as {Minutes()} to {_formOSC.address.Text + _formOSC.text_minutes.Text}");
-                        _formOSC.CurrentTime_log($"Sending: Hours Int as {Hours()} to {_formOSC.address.Text + _formOSC.text_hours.Text}");
-                        _formOSC.CurrentTime_log($"Sending: Month Int as {Month()} to {_formOSC.address.Text + _formOSC.text_month.Text}");
-                        _formOSC.CurrentTime_log($"Sending: Day Int as {Day()} to {_formOSC.address.Text + _formOSC.text_day.Text}");
-                        _formOSC.CurrentTime_log($"Sending: Wday Int as {Wday()} to {_formOSC.address.Text + _formOSC.text_wday.Text}");
+                        formOSC.CurrentTime_log($"Sending: Minutes Int as {DateTime.Now.Minute} to {formOSC.address.Text + formOSC.text_minutes.Text}");
+                        formOSC.CurrentTime_log($"Sending: Hours Int as {DateTime.Now.Hour} to {formOSC.address.Text + formOSC.text_hours.Text}");
+                        formOSC.CurrentTime_log($"Sending: Month Int as {DateTime.Now.Month} to {formOSC.address.Text + formOSC.text_month.Text}");
+                        formOSC.CurrentTime_log($"Sending: Day Int as {DateTime.Now.Day} to {formOSC.address.Text + formOSC.text_day.Text}");
+                        formOSC.CurrentTime_log($"Sending: Wday Int as {(int)DateTime.Now.DayOfWeek} to {formOSC.address.Text + formOSC.text_wday.Text}");
                     }
                     Thread.Sleep(1000);
                 }
             }
             finally
             {
-                _sender.Close();
+                sender.Close();
             }
         }
     }
